@@ -6,8 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import Model.Account;
-
+import Model.*;
 import Util.ConnectionUtil;
 
 public class SocialMediaDao {
@@ -49,6 +48,28 @@ public class SocialMediaDao {
             } else {
                 result = null;
             }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return result;
+    }
+
+    public Message daoCreateMessage(Message message){
+        Message result = null;
+        try{
+            Connection conn = ConnectionUtil.getConnection();
+            String sql = "INSERT INTO message (posted_by, message_text, time_posted_epoch) VALUES (?, ?, ?); ";
+            PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            ps.setInt(1, message.posted_by);
+            ps.setString(2, message.message_text);
+            ps.setLong(3,message.time_posted_epoch);
+            ps.executeUpdate();
+            ResultSet generatedKeys = ps.getGeneratedKeys();
+            if (generatedKeys.next()){
+                message.setMessage_id(generatedKeys.getInt(1));
+                result = message;
+            }
+
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }

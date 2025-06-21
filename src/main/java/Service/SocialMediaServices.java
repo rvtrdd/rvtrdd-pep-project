@@ -1,7 +1,7 @@
 package Service;
 
 import DAO.SocialMediaDao;
-import Model.Account;
+import Model.*;
 
 public class SocialMediaServices{
     private SocialMediaDao dao;
@@ -11,7 +11,7 @@ public class SocialMediaServices{
     }
     
     public Account serviceRegister (Account newAccount){
-        if (newAccount.username == null || newAccount.username.strip().length() == 0 || newAccount.password.length() < 4){
+        if (newAccount.username.isBlank() || newAccount.password.length() < 4){
             //throw InvalidEntryException
             return null;
         }
@@ -21,4 +21,13 @@ public class SocialMediaServices{
     public Account serviceLogin (Account existingAccount) {
         return dao.daoLogin(existingAccount);
     }
+
+    public Message serviceCreateMessage(Message message){
+        if (message.message_text.isBlank() || message.message_text.length() >= 255){
+            return null;
+        }
+        return dao.daoCreateMessage(message);
+    }
+
+
 }

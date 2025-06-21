@@ -1,6 +1,6 @@
 package Controller;
 
-import Model.Account;
+import Model.*;
 import Service.SocialMediaServices;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
@@ -76,6 +76,19 @@ public class SocialMediaController {
     }
 
     private void handleCreateMessage(Context ctx) {
+        try{
+            ObjectMapper mapper = new ObjectMapper();
+            Message message = mapper.readValue(ctx.body(), Message.class);
+            Message newMessage = services.serviceCreateMessage(message);
+            if (newMessage != null){
+                ctx.status(200);
+                ctx.json(mapper.writeValueAsString(newMessage));
+            } else {
+                ctx.status(400);
+            }  
+        } catch (JsonProcessingException e){
+            System.out.println(e.getStackTrace());
+        } 
 
     }
 
